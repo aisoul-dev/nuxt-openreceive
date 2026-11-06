@@ -1,0 +1,82 @@
+{
+  "name": "nuxt-openreceive",
+  "version": "0.1.0",
+  "description": "Nuxt module for OpenReceive: Bitcoin Lightning (and optional USDT/USDC/ETH/SOL swap) checkout that settles straight into your own wallet.",
+  "license": "MIT",
+  "author": "Grygorii Liashenko (https://github.com/frontender-ua)",
+  "homepage": "https://github.com/aisoul-dev/nuxt-openreceive#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aisoul-dev/nuxt-openreceive.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aisoul-dev/nuxt-openreceive/issues"
+  },
+  "type": "module",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "openreceive",
+    "bitcoin",
+    "lightning",
+    "nwc",
+    "payments",
+    "checkout"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "build": "nuxt-module-build build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "typecheck": "vue-tsc --noEmit -p playground/.nuxt/tsconfig.app.json && vue-tsc --noEmit -p playground/.nuxt/tsconfig.server.json",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.2.0",
+    "@openreceive/http": "^0.4.31",
+    "@openreceive/node": "^0.4.31",
+    "@openreceive/vue": "^0.4.31",
+    "defu": "^6.1.4",
+    "h3": "^1.15.0"
+  },
+  "peerDependencies": {
+    "pg": "^8.11.0"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.3",
+    "@nuxt/schema": "^4.6.4",
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.11.10",
+    "nuxt": "^4.6.4",
+    "pg": "^8.23.1",
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.3.14"
+  },
+  "packageManager": "pnpm@10.20.0"
+}

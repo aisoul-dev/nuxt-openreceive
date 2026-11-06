@@ -1,0 +1,9 @@
+node_modules
+dist
+.nuxt
+.output
+.data
+.env
+*.log
+playground/.nuxt
+playground/.output

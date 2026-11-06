@@ -1,0 +1,6 @@
+packages:
+  - playground
+  - test/fixtures/*
+
+onlyBuiltDependencies:
+  - esbuild
