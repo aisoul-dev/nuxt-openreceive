@@ -32,6 +32,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm dev:prepare
+      - name: Compiled checkout is up to date
+        run: pnpm compile:checkout && git diff --exit-code src/runtime/components/checkout.generated.js
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test

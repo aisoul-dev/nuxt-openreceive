@@ -153,19 +153,15 @@ export default defineNuxtModule<ModuleOptions>({
     }, { nitro: true, nuxt: true })
 
     // ── client ───────────────────────────────────────────────────────
-    // @openreceive/vue ships Checkout as a raw .vue file: it has to go through
-    // the app's Vue compiler on both the server and client builds.
-    nuxt.options.build.transpile.push('@openreceive/vue')
+    // The checkout ships pre-compiled (runtime/components/checkout.generated.js),
+    // so the app never compiles @openreceive/vue's raw SFC. In dev, Vite must
+    // still pre-bundle its JS entry: it reaches the CommonJS `qrcode` package.
+    // (Do NOT add it to build.transpile: Nuxt excludes transpiled packages from
+    // pre-bundling, which would ship raw CommonJS to the browser.)
+    // Under pnpm the package is only reachable through this module.
+    const direct = nuxt.options.modulesDir.some(dir => existsSync(`${dir}/@openreceive/vue/package.json`))
     nuxt.options.vite.optimizeDeps = defu(nuxt.options.vite.optimizeDeps, {
-      exclude: ['@openreceive/vue'],
-      // Vite pre-bundles by exact specifier, so list the subpaths the raw SFC
-      // reaches. This also converts the CommonJS `qrcode` dependency for dev.
-      include: [
-        '@openreceive/vue > @openreceive/elements',
-        '@openreceive/vue > @openreceive/elements/wrapper-shared',
-        '@openreceive/vue > @openreceive/browser',
-        '@openreceive/vue > @openreceive/browser/headless',
-      ],
+      include: [direct ? '@openreceive/vue' : 'nuxt-openreceive > @openreceive/vue'],
     })
 
     if (options.css) {

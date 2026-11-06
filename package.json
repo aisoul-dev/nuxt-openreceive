@@ -1,6 +1,6 @@
 {
   "name": "nuxt-openreceive",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Nuxt module for OpenReceive: Bitcoin Lightning (and optional USDT/USDC/ETH/SOL swap) checkout that settles straight into your own wallet.",
   "license": "MIT",
   "author": "Grygorii Liashenko (https://github.com/frontender-ua)",
@@ -44,7 +44,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "pnpm compile:checkout && nuxt-module-build build",
+    "compile:checkout": "node scripts/compile-checkout.mjs",
     "build": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
@@ -56,7 +57,7 @@
     "@nuxt/kit": "^4.2.0",
     "@openreceive/http": "^0.4.31",
     "@openreceive/node": "^0.4.31",
-    "@openreceive/vue": "^0.4.31",
+    "@openreceive/vue": "0.4.31",
     "defu": "^6.1.4",
     "h3": "^1.15.0"
   },
@@ -73,6 +74,7 @@
     "@nuxt/schema": "^4.6.4",
     "@types/node": "^22.10.0",
     "@types/pg": "^8.11.10",
+    "@vue/compiler-sfc": "3.5.45",
     "nuxt": "^4.6.4",
     "pg": "^8.23.1",
     "typescript": "~5.9.3",

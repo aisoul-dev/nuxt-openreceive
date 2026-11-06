@@ -12,7 +12,7 @@ OpenReceive doesn't ship a Nuxt package. Its docs have you copy a server route, 
 - manages a `pg` pool for you, or takes your own handle, Supabase, or a custom repository
 - gives `authorize` a typed `event: H3Event`, so it can read your existing session
 - turns on per-IP rate limiting with `getRequestIP` wired in
-- registers `<OpenReceiveCheckout>` globally with the prefix already filled in, and handles CSS, `build.transpile` and Vite pre-bundling for the raw SFC
+- registers `<OpenReceiveCheckout>` globally with the prefix already filled in, ships it pre-compiled, and handles the CSS and Vite pre-bundling
 - stops the build on edge presets, since the wallet client and SQL driver need Node
 - closes the wallet connection and the pool when Nitro shuts down
 
@@ -160,6 +160,8 @@ pnpm dev:prepare
 DATABASE_URL=postgres://... OPENRECEIVE_TEST_WALLET=1 pnpm dev   # playground on an in-memory test wallet
 DATABASE_URL=postgres://... pnpm test                            # builds the playground and runs a full payment e2e
 ```
+
+After bumping `@openreceive/vue`, run `pnpm compile:checkout`. The module ships its `Checkout.vue` pre-compiled to JS, so apps never compile a third-party SFC or resolve its prop types (CI fails if the file is stale).
 
 `OPENRECEIVE_TEST_WALLET=1` swaps in a fake receive-only wallet, so you can run the whole flow without a real NWC code. It is **playground only**. `POST /api/dev/settle/:hash` marks an invoice paid.
 
