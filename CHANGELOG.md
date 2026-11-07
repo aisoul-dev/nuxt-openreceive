@@ -4,7 +4,7 @@
 
 - Fix: a custom `prefix` could be silently lost when the checkout rendered on the client. Once `<openreceive-checkout>` is defined, Vue assigned `prefix` as a DOM property, which the element only exposes as a getter, so the assignment threw (`Failed setting prop "prefix"`) and the attribute was never set. The compiled checkout now always sets the element's inputs as attributes.
 - The module no longer touches the file system: the redundant `existsSync` checks are gone (`findPath` already only returns existing files), and the dev pre-bundle path is chosen from where the module runs.
-- Releases are published from GitHub Actions with npm provenance (trusted publishing), so npm and Socket can verify each version was built from this repository.
+- Releases are staged from GitHub Actions with npm provenance (trusted publishing) and go live only after a maintainer approves them with 2FA, so npm and Socket can verify each version was built from this repository.
 
 ## 0.1.2
 

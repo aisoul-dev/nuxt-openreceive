@@ -1,11 +1,15 @@
 name: Release
 
-# Publishes to npm with provenance when a version tag is pushed:
+# STAGES a release on npm (with provenance) when a version tag is pushed:
 #   pnpm version patch && git push --follow-tags
+# The version goes live only after a maintainer approves it with 2FA:
+#   npmjs.com → nuxt-openreceive → Staged Packages → Approve
+#   (or: npm stage list && npm stage approve <stage-id>)
 #
 # Uses npm Trusted Publishing (OIDC): no NPM_TOKEN secret. One-time setup on
 # npmjs.com → nuxt-openreceive → Settings → Trusted Publisher → GitHub Actions:
-#   organization: aisoul-dev, repository: nuxt-openreceive, workflow: release.yml
+#   organization: aisoul-dev, repository: nuxt-openreceive, workflow: release.yml,
+#   allowed actions: npm stage publish (stage-only is the safest setting)
 
 on:
   push:
@@ -41,7 +45,7 @@ jobs:
           node-version: 22
           cache: pnpm
           registry-url: https://registry.npmjs.org
-      # Trusted publishing needs npm >= 11.5.1; Node 22 ships npm 10.
+      # Staged publishing needs npm >= 11.15.0 (and Node >= 22.14); Node 22 ships npm 10.
       - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
 
@@ -59,5 +63,5 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
-      # prepack rebuilds dist; provenance is automatic with trusted publishing.
-      - run: npm publish --provenance --access public
+      # prepack rebuilds dist. The version is staged, not live, until approved with 2FA.
+      - run: npm stage publish --provenance

@@ -180,10 +180,10 @@ Known noise: the Vite build prints `postcss` "Lexical error" warnings for `mod()
 
 ```sh
 pnpm version patch          # bumps package.json, commits, tags vX.Y.Z
-git push --follow-tags      # the Release workflow tests and publishes with provenance
+git push --follow-tags      # the Release workflow tests and stages the version on npm
 ```
 
-Publishing runs in GitHub Actions through npm Trusted Publishing (no token in the repo). Don't run `pnpm publish` locally, or that version ships without provenance.
+The Release workflow authenticates through npm Trusted Publishing (no token in the repo) and only **stages** the version, with provenance. It goes live after a maintainer approves it with 2FA: npmjs.com → nuxt-openreceive → **Staged Packages** → **Approve**, or `npm stage list` and `npm stage approve <stage-id>`. Don't run `pnpm publish` locally, or that version ships without provenance.
 
 ## License
 
