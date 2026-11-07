@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Fix: a custom `prefix` could be silently lost when the checkout rendered on the client. Once `<openreceive-checkout>` is defined, Vue assigned `prefix` as a DOM property, which the element only exposes as a getter, so the assignment threw (`Failed setting prop "prefix"`) and the attribute was never set. The compiled checkout now always sets the element's inputs as attributes.
+- The module no longer touches the file system: the redundant `existsSync` checks are gone (`findPath` already only returns existing files), and the dev pre-bundle path is chosen from where the module runs.
+- Releases are published from GitHub Actions with npm provenance (trusted publishing), so npm and Socket can verify each version was built from this repository.
+
 ## 0.1.2
 
 - Fix: apps failed to build with `Failed to resolve import source "@openreceive/elements/wrapper-shared"` in a standard Nuxt 4 project (pnpm, TypeScript, references-style `tsconfig.json`). The checkout component now ships pre-compiled, so the app's Vue compiler never has to resolve `@openreceive/vue`'s prop types.

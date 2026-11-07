@@ -167,6 +167,15 @@ After bumping `@openreceive/vue`, run `pnpm compile:checkout`. The module ships 
 
 Known noise: the Vite build prints `postcss` "Lexical error" warnings for `mod()` / `round()` in OpenReceive's stylesheet. These are harmless: the CSS is valid and works in browsers.
 
+## Releasing
+
+```sh
+pnpm version patch          # bumps package.json, commits, tags vX.Y.Z
+git push --follow-tags      # the Release workflow tests and publishes with provenance
+```
+
+Publishing runs in GitHub Actions through npm Trusted Publishing (no token in the repo). Don't run `pnpm publish` locally, or that version ships without provenance.
+
 ## License
 
 MIT © Grygorii Liashenko ([frontender-ua](https://github.com/frontender-ua)) · [aisoul](https://aisoul.dev). OpenReceive itself is MIT, © its authors.

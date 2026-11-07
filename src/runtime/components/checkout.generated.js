@@ -5,6 +5,15 @@ import { defineComponent as _defineComponent } from 'vue';
 import { resolveDynamicComponent as _resolveDynamicComponent, normalizeProps as _normalizeProps, guardReactiveProps as _guardReactiveProps, openBlock as _openBlock, createBlock as _createBlock, mergeProps as _mergeProps, createCommentVNode as _createCommentVNode, toHandlers as _toHandlers, createElementBlock as _createElementBlock } from "vue";
 import { computed, onMounted, ref } from "vue";
 import { createWrapperCheckoutShellBinding, defineElements, validateCheckoutProps, } from "@openreceive/vue";
+
+const __openreceiveAsAttrs = (attrs) => {
+  const out = {};
+  for (const [key, value] of Object.entries(attrs ?? {})) {
+    const primitive = value == null || ['string', 'number', 'boolean'].includes(typeof value);
+    out[primitive && !/^[.^]|^(class|style|key|ref)$/.test(key) ? '^' + key : key] = value;
+  }
+  return out;
+};
 export default _defineComponent({
     ...{
         name: "Checkout",
@@ -89,9 +98,9 @@ export default _defineComponent({
         return (_ctx, _cache) => {
             return (_openBlock(), _createElementBlock("section", _normalizeProps(_guardReactiveProps(shell.value.rootAttributes)), [
                 (shell.value.themeToggle)
-                    ? (_openBlock(), _createBlock(_resolveDynamicComponent(shell.value.themeToggle.tagName), _normalizeProps(_mergeProps({ key: 0 }, shell.value.themeToggle.attributes)), null, 16))
+                    ? (_openBlock(), _createBlock(_resolveDynamicComponent(shell.value.themeToggle.tagName), _normalizeProps(_mergeProps({ key: 0 }, __openreceiveAsAttrs(shell.value.themeToggle.attributes))), null, 16))
                     : _createCommentVNode("v-if", true),
-                (_openBlock(), _createBlock(_resolveDynamicComponent(shell.value.checkout.tagName), _mergeProps(shell.value.checkout.attributes, _toHandlers(shell.value.checkout.listeners)), null, 16))
+                (_openBlock(), _createBlock(_resolveDynamicComponent(shell.value.checkout.tagName), _mergeProps(__openreceiveAsAttrs(shell.value.checkout.attributes), _toHandlers(shell.value.checkout.listeners)), null, 16))
             ], 16));
         };
     }

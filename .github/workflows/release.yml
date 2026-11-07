@@ -1,0 +1,63 @@
+name: Release
+
+# Publishes to npm with provenance when a version tag is pushed:
+#   pnpm version patch && git push --follow-tags
+#
+# Uses npm Trusted Publishing (OIDC): no NPM_TOKEN secret. One-time setup on
+# npmjs.com → nuxt-openreceive → Settings → Trusted Publisher → GitHub Actions:
+#   organization: aisoul-dev, repository: nuxt-openreceive, workflow: release.yml
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write # OIDC for trusted publishing and provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: shop
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U app"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://app:app@localhost:5432/shop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm >= 11.5.1; Node 22 ships npm 10.
+      - run: npm install -g npm@latest
+      - run: pnpm install --frozen-lockfile
+
+      - name: Tag matches package.json version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "v$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $VERSION" >&2
+            exit 1
+          fi
+
+      - run: pnpm dev:prepare
+      - name: Compiled checkout is up to date
+        run: pnpm compile:checkout && git diff --exit-code src/runtime/components/checkout.generated.js
+      - run: pnpm typecheck
+      - run: pnpm test
+
+      # prepack rebuilds dist; provenance is automatic with trusted publishing.
+      - run: npm publish --provenance --access public

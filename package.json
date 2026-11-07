@@ -1,6 +1,6 @@
 {
   "name": "nuxt-openreceive",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Nuxt module for OpenReceive: Bitcoin Lightning (and optional USDT/USDC/ETH/SOL swap) checkout that settles straight into your own wallet.",
   "license": "MIT",
   "author": "Grygorii Liashenko (https://github.com/frontender-ua)",

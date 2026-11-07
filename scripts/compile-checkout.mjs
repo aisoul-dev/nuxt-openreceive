@@ -38,7 +38,7 @@ const compiled = compileScript(descriptor, {
   },
 })
 
-const js = ts.transpileModule(compiled.content, {
+let js = ts.transpileModule(compiled.content, {
   compilerOptions: {
     target: ts.ScriptTarget.ES2022,
     module: ts.ModuleKind.ESNext,
@@ -49,6 +49,28 @@ const js = ts.transpileModule(compiled.content, {
 }).outputText
   // The SFC imports its own package entry relatively.
   .replace(/from\s+["']\.\/index\.js["']/g, 'from "@openreceive/vue"')
+
+// Force the custom elements' inputs to be set as ATTRIBUTES (Vue's `.attr`,
+// i.e. a `^` key). Otherwise, once <openreceive-checkout> is defined, Vue sees
+// `prefix` etc. as DOM properties and assigns them; the element only exposes
+// getters, so the assignment throws, Vue warns, and the attribute is never set:
+// a custom route prefix is silently lost on client-side renders.
+const ATTRS_HELPER = `
+const __openreceiveAsAttrs = (attrs) => {
+  const out = {};
+  for (const [key, value] of Object.entries(attrs ?? {})) {
+    const primitive = value == null || ['string', 'number', 'boolean'].includes(typeof value);
+    out[primitive && !/^[.^]|^(class|style|key|ref)$/.test(key) ? '^' + key : key] = value;
+  }
+  return out;
+};`
+let patched = 0
+const forced = js.replace(/shell\.value\.(checkout|themeToggle)\.attributes/g, (match) => {
+  patched++
+  return `__openreceiveAsAttrs(${match})`
+})
+if (patched !== 2) throw new Error(`Expected 2 attribute bindings to patch, found ${patched}`)
+js = forced.replace(/(^import[^\n]*\n)(?!import)/m, `$1${ATTRS_HELPER}\n`)
 
 if (/from\s+["']\.\//.test(js)) throw new Error('Unexpected relative import left in compiled Checkout')
 if (!/props:\s*\{/.test(js)) throw new Error('Runtime props were not generated: type resolution failed')

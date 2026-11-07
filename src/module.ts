@@ -1,4 +1,3 @@
-import { existsSync } from 'node:fs'
 import {
   addComponent,
   addServerHandler,
@@ -102,7 +101,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // ── host definition (virtual import) ──────────────────────────────
     const hostPath = await findPath(options.host, { extensions: ['.ts', '.mts', '.js', '.mjs'] })
-    if (!hostPath || !existsSync(hostPath)) {
+    if (!hostPath) {
       logger.warn(
         `No host definition found at \`${options.host}\`. Payment routes under \`${prefix}\` will answer 503 until you create it `
         + '(export default defineOpenReceiveHost({ amountFor, authorize, onPaid })).',
@@ -158,10 +157,12 @@ export default defineNuxtModule<ModuleOptions>({
     // still pre-bundle its JS entry: it reaches the CommonJS `qrcode` package.
     // (Do NOT add it to build.transpile: Nuxt excludes transpiled packages from
     // pre-bundling, which would ship raw CommonJS to the browser.)
-    // Under pnpm the package is only reachable through this module.
-    const direct = nuxt.options.modulesDir.some(dir => existsSync(`${dir}/@openreceive/vue/package.json`))
+    // Installed from npm, reach it through this module: under pnpm it is not a
+    // direct dependency of the app (the nested form also works with hoisting).
+    // Running from source (this repo's playground), it is a direct dependency.
+    const installed = import.meta.url.includes('/node_modules/')
     nuxt.options.vite.optimizeDeps = defu(nuxt.options.vite.optimizeDeps, {
-      include: [direct ? '@openreceive/vue' : 'nuxt-openreceive > @openreceive/vue'],
+      include: [installed ? 'nuxt-openreceive > @openreceive/vue' : '@openreceive/vue'],
     })
 
     if (options.css) {
