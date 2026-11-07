@@ -16,6 +16,15 @@ OpenReceive doesn't ship a Nuxt package. Its docs have you copy a server route, 
 - stops the build on edge presets, since the wallet client and SQL driver need Node
 - closes the wallet connection and the pool when Nitro shuts down
 
+## Tested with real money
+
+On top of CI (a full payment e2e against Postgres on an in-memory test wallet), the module was tested by hand end to end in a Nuxt 4 tip jar app, with no test doubles:
+
+- SOL sent from an exchange went through the Lightning Swap provider to a Lightning invoice, and **3 000 sats landed in the receiving wallet** (Rizful, connected with a receive-only NWC code).
+- The checkout showed settlement verified by the backend, and `onPaid` marked the order paid inside the settlement transaction.
+
+The swap refund path (`refund_required`) has not been tested with real funds yet.
+
 ## Install
 
 ```sh
