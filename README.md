@@ -22,8 +22,7 @@ On top of CI (a full payment e2e against Postgres on an in-memory test wallet), 
 
 - SOL sent from an exchange went through the Lightning Swap provider to a Lightning invoice, and **3 000 sats landed in the receiving wallet** (Rizful, connected with a receive-only NWC code).
 - The checkout showed settlement verified by the backend, and `onPaid` marked the order paid inside the settlement transaction.
-
-The swap refund path (`refund_required`) has not been tested with real funds yet.
+- The swap refund path was tested with real funds too: an overpaid SOL deposit went to `refund_required`, the payer entered a refund address on the same checkout page, and the SOL came back.
 
 ## Install
 
