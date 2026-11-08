@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Docs and playground: the checkout page example refetches the order on `onError`. When an invoice was paid on another device (or in a tab that was closed before it noticed), the checkout's first request settles it, and an `amountFor` that returns `null` for paid orders makes that request fail with `Unknown reference.`. Refetching shows the order as paid instead of the error. No second invoice was ever minted; the e2e test now asserts that.
+
 ## 0.1.4
 
 - `css: true` (the default) now ships `@openreceive/vue/styles.css` with the checkout component's chunk instead of every page's entry CSS. Pages without `<OpenReceiveCheckout>` no longer load ~200 KB of render-blocking checkout CSS; pages with it still get the styles on first load and on client-side navigation. `css: 'global'` restores the old app-wide behaviour (use it if you render the `<openreceive-checkout>` element directly, without the component), and with `component: false` the stylesheet stays global as before.

@@ -124,12 +124,15 @@ const settledHere = ref(false)
 
 <template>
   <p>{{ data?.state === 'paid' ? 'Paid' : 'Awaiting payment' }}</p>
-  <!-- show it only while unpaid, but keep it mounted once it settles: it is the receipt -->
+  <!-- show it only while unpaid, but keep it mounted once it settles: it is the receipt.
+       onError refetches: an invoice paid on another device (or in a closed tab) settles on the
+       checkout's first request, so the order may already be paid; this shows it as paid -->
   <OpenReceiveCheckout
     v-if="data && (data.state !== 'paid' || settledHere)"
     :reference="data.reference"
     :resumable="true"
     :onSettled="() => { settledHere = true; refresh() }"
+    :onError="() => refresh()"
   />
 </template>
 ```

@@ -75,6 +75,13 @@ test('payment flow through nuxt-openreceive', { skip: !DATABASE_URL && 'DATABASE
 
   await call(`/api/dev/settle/${paymentHash}`)
 
+  // Paid in the wallet, tab closed, order reopened elsewhere: never a second invoice.
+  const reopened = await call('/openreceive/checkouts', { reference }, cookie)
+  assert.ok(
+    reopened.status >= 400 || reopened.body.checkout.payment_hash === paymentHash,
+    'reopening a paid order returns the same invoice or refuses, never mints another',
+  )
+
   // Settlement lands on a later check once the reconcile gate's interval passes.
   let status
   for (let i = 0; i < 30 && status !== 'settled'; i++) {
