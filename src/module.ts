@@ -31,8 +31,13 @@ export interface ModuleOptions {
    * `OpenReceiveCheckout`; a string sets your own name; `false` skips it.
    */
   component: boolean | string
-  /** Add `@openreceive/vue/styles.css` to the app. Default `true`. */
-  css: boolean
+  /**
+   * Load `@openreceive/vue/styles.css`. `true` ships it with the checkout
+   * component's chunk, so only pages that render it load the CSS (app-wide
+   * when `component` is `false`). `'global'` adds it to every page's entry CSS;
+   * `false` leaves it to you. Default `true`.
+   */
+  css: boolean | 'global'
   /**
    * Per-IP invoice rate limiting (counted from `openreceive_payments`, so it
    * survives restarts and spans instances). Default `true`. The module wires
@@ -165,14 +170,16 @@ export default defineNuxtModule<ModuleOptions>({
       include: [installed ? 'nuxt-openreceive > @openreceive/vue' : '@openreceive/vue'],
     })
 
-    if (options.css) {
+    // Without the component there is no chunk to carry the CSS, so it stays global.
+    const styledComponent = options.css === true && !!options.component
+    if (options.css && !styledComponent) {
       nuxt.options.css.push('@openreceive/vue/styles.css')
     }
 
     if (options.component) {
       addComponent({
         name: typeof options.component === 'string' ? options.component : 'OpenReceiveCheckout',
-        filePath: resolve('./runtime/components/OpenReceiveCheckout'),
+        filePath: resolve(styledComponent ? './runtime/components/OpenReceiveCheckoutStyled' : './runtime/components/OpenReceiveCheckout'),
       })
     }
 

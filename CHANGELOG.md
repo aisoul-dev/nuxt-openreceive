@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `css: true` (the default) now ships `@openreceive/vue/styles.css` with the checkout component's chunk instead of every page's entry CSS. Pages without `<OpenReceiveCheckout>` no longer load ~200 KB of render-blocking checkout CSS; pages with it still get the styles on first load and on client-side navigation. `css: 'global'` restores the old app-wide behaviour (use it if you render the `<openreceive-checkout>` element directly, without the component), and with `component: false` the stylesheet stays global as before.
+
 ## 0.1.3
 
 - Fix: a custom `prefix` could be silently lost when the checkout rendered on the client. Once `<openreceive-checkout>` is defined, Vue assigned `prefix` as a DOM property, which the element only exposes as a getter, so the assignment threw (`Failed setting prop "prefix"`) and the attribute was never set. The compiled checkout now always sets the element's inputs as attributes.

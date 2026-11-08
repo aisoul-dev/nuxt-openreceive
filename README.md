@@ -145,7 +145,7 @@ openreceive: {
   prefix: '/openreceive',              // route prefix; the component uses it too
   host: '~~/server/openreceive',       // host definition file
   component: true,                     // true → <OpenReceiveCheckout>, string → custom name, false → none
-  css: true,                           // add @openreceive/vue/styles.css
+  css: true,                           // ship @openreceive/vue/styles.css with the checkout's chunk; 'global' → every page; false → none
   rateLimiting: true,                  // or { limitPerHour, limitPerDay, message }
   trustProxy: false,                   // read x-forwarded-for (only behind YOUR proxy)
   migrate: false,                      // run the payment-table DDL on boot (managed pool only)

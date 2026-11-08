@@ -53,6 +53,12 @@ test('payment flow through nuxt-openreceive', { skip: !DATABASE_URL && 'DATABASE
   const cookie = order.res.headers.get('set-cookie').split(';')[0]
   const reference = order.body.id
 
+  // css: true ships the stylesheet with the checkout's chunk, not every page's entry CSS.
+  const home = await fetch(BASE).then(r => r.text())
+  assert.doesNotMatch(home, /openreceive-root|rel="stylesheet"/, 'a page without the checkout ships no checkout CSS')
+  const unpaid = await fetch(`${BASE}/checkout/${reference}`, { headers: { cookie } }).then(r => r.text())
+  assert.match(unpaid, /openreceive-root/, 'the checkout page ships its CSS')
+
   const stranger = await call('/openreceive/checkouts/prepare', { reference })
   assert.equal(stranger.status, 403, 'authorize denies a visitor who does not own the order')
 
