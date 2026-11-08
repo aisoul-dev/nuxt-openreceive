@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.5
 
 - Docs and playground: the checkout page example refetches the order on `onError`. When an invoice was paid on another device (or in a tab that was closed before it noticed), the checkout's first request settles it, and an `amountFor` that returns `null` for paid orders makes that request fail with `Unknown reference.`. Refetching shows the order as paid instead of the error. No second invoice was ever minted; the e2e test now asserts that.
 
