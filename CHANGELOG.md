@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.4
 
 - `css: true` (the default) now ships `@openreceive/vue/styles.css` with the checkout component's chunk instead of every page's entry CSS. Pages without `<OpenReceiveCheckout>` no longer load ~200 KB of render-blocking checkout CSS; pages with it still get the styles on first load and on client-side navigation. `css: 'global'` restores the old app-wide behaviour (use it if you render the `<openreceive-checkout>` element directly, without the component), and with `component: false` the stylesheet stays global as before.
 
