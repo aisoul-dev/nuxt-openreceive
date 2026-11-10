@@ -75,12 +75,18 @@ test('payment flow through nuxt-openreceive', { skip: !DATABASE_URL && 'DATABASE
 
   await call(`/api/dev/settle/${paymentHash}`)
 
-  // Paid in the wallet, tab closed, order reopened elsewhere: never a second invoice.
+  // Paid in the wallet, tab closed, order reopened elsewhere (OpenReceive#122):
+  // prepare reconciles (once the gate's interval passes) and answers the receipt,
+  // and no second invoice is minted.
+  let reopenedPrepare
+  for (let i = 0; i < 30 && !reopenedPrepare?.body?.paid; i++) {
+    await new Promise(r => setTimeout(r, 1000))
+    reopenedPrepare = await call('/openreceive/checkouts/prepare', { reference }, cookie)
+    assert.equal(reopenedPrepare.status, 200)
+  }
+  assert.equal(reopenedPrepare.body.paid?.payment_hash, paymentHash, 'prepare opens a paid order on its receipt')
   const reopened = await call('/openreceive/checkouts', { reference }, cookie)
-  assert.ok(
-    reopened.status >= 400 || reopened.body.checkout.payment_hash === paymentHash,
-    'reopening a paid order returns the same invoice or refuses, never mints another',
-  )
+  assert.equal(reopened.status, 409, 'a paid reference is refused with 409, even though amountFor returns null')
 
   // Settlement lands on a later check once the reconcile gate's interval passes.
   let status
@@ -94,5 +100,5 @@ test('payment flow through nuxt-openreceive', { skip: !DATABASE_URL && 'DATABASE
   assert.match(page, /Paid, thank you!/, 'onPaid marked the order paid')
 
   const again = await call('/openreceive/checkouts', { reference }, cookie)
-  assert.ok(again.status >= 400, 'a paid order cannot start a new checkout')
+  assert.equal(again.status, 409, 'a paid order cannot start a new checkout')
 })

@@ -125,14 +125,13 @@ const settledHere = ref(false)
 <template>
   <p>{{ data?.state === 'paid' ? 'Paid' : 'Awaiting payment' }}</p>
   <!-- show it only while unpaid, but keep it mounted once it settles: it is the receipt.
-       onError refetches: an invoice paid on another device (or in a closed tab) settles on the
-       checkout's first request, so the order may already be paid; this shows it as paid -->
+       An order paid on another device (or in a tab closed too early) opens straight on the
+       receipt and fires onSettled, so the page flips to paid without extra handling -->
   <OpenReceiveCheckout
     v-if="data && (data.state !== 'paid' || settledHere)"
     :reference="data.reference"
     :resumable="true"
     :onSettled="() => { settledHere = true; refresh() }"
-    :onError="() => refresh()"
   />
 </template>
 ```
@@ -172,7 +171,7 @@ DATABASE_URL=postgres://... OPENRECEIVE_TEST_WALLET=1 pnpm dev   # playground on
 DATABASE_URL=postgres://... pnpm test                            # builds the playground and runs a full payment e2e
 ```
 
-After bumping `@openreceive/vue`, run `pnpm compile:checkout`. The module ships its `Checkout.vue` pre-compiled to JS, so apps never compile a third-party SFC or resolve its prop types (CI fails if the file is stale).
+After bumping `@openreceive/vue`, run `pnpm compile:checkout`. It copies upstream's compiled `Checkout.js` into the module with one patch: the custom element's inputs are set as attributes, because `prefix` is a built-in read-only DOM property (`Element.prototype.prefix`) and would otherwise be dropped. CI fails if the generated file is stale.
 
 `OPENRECEIVE_TEST_WALLET=1` swaps in a fake receive-only wallet, so you can run the whole flow without a real NWC code. It is **playground only**. `POST /api/dev/settle/:hash` marks an invoice paid.
 

@@ -1,60 +1,38 @@
-// Pre-compiles @openreceive/vue's raw Checkout.vue into plain JS shipped in
-// src/runtime/components/checkout.generated.js.
+// Builds src/runtime/components/checkout.generated.js from @openreceive/vue's
+// compiled Checkout (dist/Checkout.js, shipped as JS since 0.4.33), with one
+// patch on top.
 //
-// Why: Checkout.vue declares `defineProps<WrapperCheckoutComponentProps>()`
-// with a type imported from another package. Compiling it inside a user's app
-// makes @vue/compiler-sfc resolve that type with the app's tsconfig, which
-// fails in a standard Nuxt 4 project (references-style tsconfig + pnpm).
-// Shipping it compiled means users never compile someone else's SFC.
+// The patch: the shell binds the custom element's inputs (`prefix`,
+// `reference`, ...) as ordinary vnode props. For a custom element Vue sets a
+// prop as a DOM property whenever `key in el`, and `prefix` is a built-in,
+// read-only DOM property on every element (Element.prototype.prefix, the
+// namespace prefix). The assignment throws, Vue warns
+// ("Failed setting prop "prefix""), and the attribute is never set: a custom
+// route prefix is silently lost. Forcing those inputs to attributes (Vue's
+// `.attr`, a `^` key) fixes it on the server and the client.
 //
 // Run after bumping @openreceive/vue:  pnpm compile:checkout
-import { readFileSync, writeFileSync, realpathSync, existsSync } from 'node:fs'
-import { createRequire } from 'node:module'
+// CI fails if the generated file is stale.
+import { readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { compileScript, parse, registerTS } from '@vue/compiler-sfc'
-import ts from 'typescript'
 
-const require = createRequire(import.meta.url)
 const root = fileURLToPath(new URL('..', import.meta.url))
 const out = `${root}src/runtime/components/checkout.generated.js`
 
-registerTS(() => ts)
-
 const pkgDir = realpathSync(`${root}node_modules/@openreceive/vue`)
-const file = `${pkgDir}/dist/Checkout.vue`
 const version = JSON.parse(readFileSync(`${pkgDir}/package.json`, 'utf8')).version
-const { descriptor, errors } = parse(readFileSync(file, 'utf8'), { filename: file })
-if (errors.length) throw errors[0]
-if (descriptor.styles.length) throw new Error('Checkout.vue has <style> blocks: extend this script to emit them')
+let js = readFileSync(`${pkgDir}/dist/Checkout.js`, 'utf8')
 
-const compiled = compileScript(descriptor, {
-  id: 'openreceive-checkout',
-  inlineTemplate: true,
-  isProd: true,
-  fs: {
-    fileExists: existsSync,
-    readFile: f => (existsSync(f) ? readFileSync(f, 'utf8') : undefined),
-    realpath: realpathSync,
-  },
-})
+// Strip comments (upstream prose, not needed at runtime) but keep the code as is.
+js = js
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/^\s*\/\/.*$/gm, '')
+  .replace(/\n{3,}/g, '\n\n')
 
-let js = ts.transpileModule(compiled.content, {
-  compilerOptions: {
-    target: ts.ScriptTarget.ES2022,
-    module: ts.ModuleKind.ESNext,
-    verbatimModuleSyntax: false,
-    removeComments: true,
-  },
-  fileName: 'Checkout.ts',
-}).outputText
-  // The SFC imports its own package entry relatively.
-  .replace(/from\s+["']\.\/index\.js["']/g, 'from "@openreceive/vue"')
+// The compiled file imports its own package entry relatively.
+js = js.replace(/from\s+["']\.\/index\.js["']/g, 'from "@openreceive/vue"')
+if (/from\s+["']\.\.?\//.test(js)) throw new Error('Unexpected relative import left in Checkout.js')
 
-// Force the custom elements' inputs to be set as ATTRIBUTES (Vue's `.attr`,
-// i.e. a `^` key). Otherwise, once <openreceive-checkout> is defined, Vue sees
-// `prefix` etc. as DOM properties and assigns them; the element only exposes
-// getters, so the assignment throws, Vue warns, and the attribute is never set:
-// a custom route prefix is silently lost on client-side renders.
 const ATTRS_HELPER = `
 const __openreceiveAsAttrs = (attrs) => {
   const out = {};
@@ -64,23 +42,27 @@ const __openreceiveAsAttrs = (attrs) => {
   }
   return out;
 };`
+
 let patched = 0
-const forced = js.replace(/shell\.value\.(checkout|themeToggle)\.attributes/g, (match) => {
+js = js.replace(/shell\.value\.(checkout|themeToggle)\.attributes/g, (match) => {
   patched++
   return `__openreceiveAsAttrs(${match})`
 })
-if (patched !== 2) throw new Error(`Expected 2 attribute bindings to patch, found ${patched}`)
-js = forced.replace(/(^import[^\n]*\n)(?!import)/m, `$1${ATTRS_HELPER}\n`)
-
-if (/from\s+["']\.\//.test(js)) throw new Error('Unexpected relative import left in compiled Checkout')
-if (!/props:\s*\{/.test(js)) throw new Error('Runtime props were not generated: type resolution failed')
+if (patched !== 2) {
+  throw new Error(`Expected 2 attribute bindings to patch in Checkout.js, found ${patched}: check the upstream render function`)
+}
+// Insert the helper after the last import statement.
+const lastImport = [...js.matchAll(/^import[^\n]*\n/gm)].pop()
+if (!lastImport) throw new Error('No import statements found in Checkout.js')
+const at = lastImport.index + lastImport[0].length
+js = `${js.slice(0, at)}${ATTRS_HELPER}\n${js.slice(at)}`
 
 writeFileSync(out, [
-  `// GENERATED by scripts/compile-checkout.mjs from @openreceive/vue@${version} Checkout.vue. Do not edit.`,
+  `// GENERATED by scripts/compile-checkout.mjs from @openreceive/vue@${version} dist/Checkout.js. Do not edit.`,
   '// @ts-nocheck',
   '/* eslint-disable */',
   js.trim(),
   '',
 ].join('\n'))
 
-console.log(`compiled @openreceive/vue@${version} Checkout.vue → ${out.replace(root, '')}`)
+console.log(`patched @openreceive/vue@${version} Checkout.js → ${out.replace(root, '')}`)

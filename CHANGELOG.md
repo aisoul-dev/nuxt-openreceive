@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6
+
+- `@openreceive/*` 0.4.33. An order paid on another device (or in a tab closed before it noticed) now opens straight on the receipt and fires `onSettled`, instead of offering to pay again and then failing (OpenReceive#122). A paid reference is always refused with 409, even when `amountFor` returns `null` for paid orders. The `onError` refetch from 0.1.5 is no longer needed and was removed from the docs and playground.
+- `@openreceive/vue` now ships its checkout compiled, so `compile:checkout` no longer compiles an SFC: it copies upstream's `Checkout.js` and keeps one patch, setting the element's inputs as attributes (`prefix` is a built-in, read-only DOM property, so assigning it as a property dropped custom prefixes). `@vue/compiler-sfc` is no longer a dev dependency.
+
 ## 0.1.5
 
 - Docs and playground: the checkout page example refetches the order on `onError`. When an invoice was paid on another device (or in a tab that was closed before it noticed), the checkout's first request settles it, and an `amountFor` that returns `null` for paid orders makes that request fail with `Unknown reference.`. Refetching shows the order as paid instead of the error. No second invoice was ever minted; the e2e test now asserts that.
