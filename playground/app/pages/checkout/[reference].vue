@@ -6,6 +6,8 @@ if (error.value) {
 }
 // Keep the checkout mounted after it settles on this page: it is the receipt.
 // An order paid elsewhere opens on the receipt and fires onSettled too.
+// On a checkout error, refetch: reopened within seconds of paying, before the
+// payment is recorded, the checkout can offer to pay and then get a 409.
 const settledHere = ref(false)
 function onSettled() {
   settledHere.value = true
@@ -25,6 +27,7 @@ function onSettled() {
       :reference="data.reference"
       :resumable="true"
       :onSettled="onSettled"
+      :onError="() => refresh()"
     />
   </div>
 </template>

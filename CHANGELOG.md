@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Docs and playground: the checkout page example refetches the order on `onError` again. Reopening an order within seconds of paying, before the payment is recorded, can still show "Pay this invoice" and then fail with 409 "already paid". The upstream maintainer recommends the refetch for that window (OpenReceive#137). The element fix for the double prepare on upgrade (OpenReceive#138) lands in the next `@openreceive` release; bump to it once published.
+
 ## 0.1.6
 
 - `@openreceive/*` 0.4.33. An order paid on another device (or in a tab closed before it noticed) now opens straight on the receipt and fires `onSettled`, instead of offering to pay again and then failing (OpenReceive#122). A paid reference is always refused with 409, even when `amountFor` returns `null` for paid orders. The `onError` refetch from 0.1.5 is no longer needed and was removed from the docs and playground.
