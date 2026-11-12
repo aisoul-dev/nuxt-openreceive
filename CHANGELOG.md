@@ -1,8 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.1.7
 
-- Docs and playground: the checkout page example refetches the order on `onError` again. Reopening an order within seconds of paying, before the payment is recorded, can still show "Pay this invoice" and then fail with 409 "already paid". The upstream maintainer recommends the refetch for that window (OpenReceive#137). The element fix for the double prepare on upgrade (OpenReceive#138) lands in the next `@openreceive` release; bump to it once published.
+- `@openreceive/*` 0.4.35, with two fixes reported from this module:
+  - The checkout element sends one `POST /checkouts/prepare` when it upgrades, not two (OpenReceive#137, OpenReceive#138). The first, aborted request could settle a payment while holding the reconcile gate, so a reopened paid order briefly offered "Pay this invoice" and then failed with 409.
+  - `@openreceive/vue` binds the element's inputs as attributes itself, so a custom `prefix` is kept on client renders (OpenReceive#132, OpenReceive#139). `compile:checkout` no longer patches upstream's `Checkout.js`: it copies it and fails if that attribute binding ever disappears.
+- Docs and playground: the checkout page example refetches the order on `onError` again. Reopening an order within seconds of paying, before the payment is recorded, can still offer to pay and then fail with 409; upstream recommends the refetch for that window (OpenReceive#137).
 
 ## 0.1.6
 

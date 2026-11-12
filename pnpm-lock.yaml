@@ -12,14 +12,14 @@ importers:
         specifier: ^4.2.0
         version: 4.6.4(@nuxt/schema@4.6.4)(confbox@0.3.2)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(rolldown@1.2.16)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.67.5)(vite@8.3.6(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)))
       '@openreceive/http':
-        specifier: ^0.4.33
-        version: 0.4.33(typescript@5.9.3)
+        specifier: ^0.4.35
+        version: 0.4.35(typescript@5.9.3)
       '@openreceive/node':
-        specifier: ^0.4.33
-        version: 0.4.33(typescript@5.9.3)
+        specifier: ^0.4.35
+        version: 0.4.35(typescript@5.9.3)
       '@openreceive/vue':
-        specifier: 0.4.33
-        version: 0.4.33(vue@3.5.45(typescript@5.9.3))
+        specifier: 0.4.35
+        version: 0.4.35(vue@3.5.45(typescript@5.9.3))
       defu:
         specifier: ^6.1.4
         version: 6.1.7
@@ -540,8 +540,8 @@ packages:
     resolution: {integrity: sha512-h58Bw8oQg9MXdGud5agfRnjGVY24Hzj8hCljdIEZyijXjfkVdSXet2Mpjc3lz/BpIdZz51uM8CXuwnXi0BOqFg==}
     engines: {node: '>=14'}
 
-  '@getalby/sdk@8.1.1':
-    resolution: {integrity: sha512-2Y+5bpSkqlUAh5azEjJl1BZ7hp52Yxy/Gaa1esAXJw6D0UszbycKO1WViX2FWGjqq1gW/wmRNkXWdwgaUk9qrg==}
+  '@getalby/sdk@9.0.0':
+    resolution: {integrity: sha512-lUepv1KWXVAuycHsl3qYMkgvwol1fgjjyPDKEfpeQ9soNN3nupf8YAX+mbldK+w+caGai3iXfykzFmT7kmSfBw==}
     engines: {node: '>=22'}
 
   '@ioredis/commands@1.10.0':
@@ -738,33 +738,33 @@ packages:
       nuxt: ^4.6.4
       vite: ^8.3.5
 
-  '@openreceive/browser@0.4.33':
-    resolution: {integrity: sha512-S+7SuZ3aMXkeq8aTitdlcGToI6uft9x/lEH0BPA5PzamLGtQ8gl2jAnfoiMFQLhjCZclRIQ16N5XLGu+0VyW2g==}
+  '@openreceive/browser@0.4.35':
+    resolution: {integrity: sha512-2pY7l5hYkAeQj4OeXehC/kbE8u5Q182tHCAx2DrjwECLKabQYDjsAFpECBfl2anM2oCprtJGEOaH9GqeV8L1sQ==}
     engines: {node: '>=22'}
 
-  '@openreceive/core@0.4.33':
-    resolution: {integrity: sha512-m9AfssHix5/NOXDU6qz6pB3OtBObh3IAcGg/ys4m8DbGu4R1G643SEfq/PHY8wxh6T8dXS9QF2TLi1LxldMvzA==}
+  '@openreceive/core@0.4.35':
+    resolution: {integrity: sha512-wDyXiq1vtBeKOnRxyHfRnOaIri7MsN9Z/LRnD2LiIk94qZGx1vUGZalE+wCUBIak6/6xVuUBpLe99HR/BuY1dw==}
     engines: {node: '>=22'}
 
-  '@openreceive/elements@0.4.33':
-    resolution: {integrity: sha512-EqStWxwN1FikeIWzUgE34ubIfssvDpQKubv0XhIf8qoit6Sufa1yyD/Wp2GSbbZYihApV9Ukky7R3wAx4Zat8w==}
+  '@openreceive/elements@0.4.35':
+    resolution: {integrity: sha512-c37g4TUCoXgOrKx1RndTI+Rs84ILqkrdV3qIZfwbJACRZNIuBpcMKDIzY+hDwK6YyagLBVqDTOQWC8YrgqOjTw==}
     engines: {node: '>=22'}
 
-  '@openreceive/http@0.4.33':
-    resolution: {integrity: sha512-UP7K5lTgDIdyUz/RX0UfqHl2FXJNQTmWtRk+1VkS/HVQ+2CUyslaPR9ul/XlhHuxe1bP5wjh611iRLwnYswlag==}
+  '@openreceive/http@0.4.35':
+    resolution: {integrity: sha512-khVz1MCqFFqS1jUv4NWBghvu/hw5bbLIJod3ZSUliyQOKTBVxQkTOIqry1yI+zWZImR37cBMOCljgq/DlOsSMQ==}
     engines: {node: '>=22'}
 
-  '@openreceive/node@0.4.33':
-    resolution: {integrity: sha512-+V9F1vz5Tyh0JUD50mUMUdCIV0jvIBfd42jQVmIJKl5Ad4fZLetGTqgfz1QUOUHQUlxu1pvCZxqHFX5q2z4Rfg==}
+  '@openreceive/node@0.4.35':
+    resolution: {integrity: sha512-F9KrwFbtGx6G81iew19ylX9KzZhBX5RwzzcQufN+o1pl5nUfoRNrYjTK6/Ylbe7LycqpKeEe8ymIhIPdYUazYA==}
     engines: {node: '>=22'}
     hasBin: true
 
-  '@openreceive/provider-data@0.4.33':
-    resolution: {integrity: sha512-QaltzyiLSiqWX04p0lGjiCcDcmT1UKnvr8XDxq7dd76cIDpdWAvl3We0SMDAi1+RVLJMxssRSZ/C1wrwQCF9rQ==}
+  '@openreceive/provider-data@0.4.35':
+    resolution: {integrity: sha512-eTqwPQMp1StkwiFVt41jzccXazNOH/lz2FulypPG0lzuBdDw94cJyndn/ZE4HFAge3H6KO2jdeBaSCX4rbaqRg==}
     engines: {node: '>=22'}
 
-  '@openreceive/vue@0.4.33':
-    resolution: {integrity: sha512-f8GpdmFrleikQWnP864ywAMl9J/v+/x2FrRsgLohL9UpwyIBiDx6ZOWmy+BZsv1LnyN92v1pSPvwUbm+c6C/sQ==}
+  '@openreceive/vue@0.4.35':
+    resolution: {integrity: sha512-bd3a4icwDTDkFEtLdRhsf3A9nxGil/diMA92btBnTVHi2k8n0NCZVM5uAlqthGCxGQvw2vbCAf5lmydY3V6FWw==}
     engines: {node: '>=22'}
     peerDependencies:
       vue: '>=3.4.0'
@@ -4128,7 +4128,7 @@ snapshots:
 
   '@getalby/lightning-tools@9.0.2': {}
 
-  '@getalby/sdk@8.1.1(typescript@5.9.3)':
+  '@getalby/sdk@9.0.0(typescript@5.9.3)':
     dependencies:
       '@getalby/lightning-tools': 9.0.2
       '@webbtc/webln-types': 3.0.0
@@ -4603,40 +4603,40 @@ snapshots:
       - rolldown
       - unplugin
 
-  '@openreceive/browser@0.4.33':
+  '@openreceive/browser@0.4.35':
     dependencies:
-      '@openreceive/core': 0.4.33
-      '@openreceive/provider-data': 0.4.33
+      '@openreceive/core': 0.4.35
+      '@openreceive/provider-data': 0.4.35
       qrcode: 1.5.4
 
-  '@openreceive/core@0.4.33': {}
+  '@openreceive/core@0.4.35': {}
 
-  '@openreceive/elements@0.4.33':
+  '@openreceive/elements@0.4.35':
     dependencies:
-      '@openreceive/browser': 0.4.33
+      '@openreceive/browser': 0.4.35
 
-  '@openreceive/http@0.4.33(typescript@5.9.3)':
+  '@openreceive/http@0.4.35(typescript@5.9.3)':
     dependencies:
-      '@openreceive/core': 0.4.33
-      '@openreceive/node': 0.4.33(typescript@5.9.3)
+      '@openreceive/core': 0.4.35
+      '@openreceive/node': 0.4.35(typescript@5.9.3)
     transitivePeerDependencies:
       - nostr-wasm
       - typescript
 
-  '@openreceive/node@0.4.33(typescript@5.9.3)':
+  '@openreceive/node@0.4.35(typescript@5.9.3)':
     dependencies:
-      '@getalby/sdk': 8.1.1(typescript@5.9.3)
-      '@openreceive/core': 0.4.33
+      '@getalby/sdk': 9.0.0(typescript@5.9.3)
+      '@openreceive/core': 0.4.35
     transitivePeerDependencies:
       - nostr-wasm
       - typescript
 
-  '@openreceive/provider-data@0.4.33': {}
+  '@openreceive/provider-data@0.4.35': {}
 
-  '@openreceive/vue@0.4.33(vue@3.5.45(typescript@5.9.3))':
+  '@openreceive/vue@0.4.35(vue@3.5.45(typescript@5.9.3))':
     dependencies:
-      '@openreceive/browser': 0.4.33
-      '@openreceive/elements': 0.4.33
+      '@openreceive/browser': 0.4.35
+      '@openreceive/elements': 0.4.35
       vue: 3.5.45(typescript@5.9.3)
 
   '@oxc-project/types@0.156.0': {}

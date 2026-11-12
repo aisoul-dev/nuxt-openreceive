@@ -174,7 +174,7 @@ DATABASE_URL=postgres://... OPENRECEIVE_TEST_WALLET=1 pnpm dev   # playground on
 DATABASE_URL=postgres://... pnpm test                            # builds the playground and runs a full payment e2e
 ```
 
-After bumping `@openreceive/vue`, run `pnpm compile:checkout`. It copies upstream's compiled `Checkout.js` into the module with one patch: the custom element's inputs are set as attributes, because `prefix` is a built-in read-only DOM property (`Element.prototype.prefix`) and would otherwise be dropped. CI fails if the generated file is stale.
+After bumping `@openreceive/vue`, run `pnpm compile:checkout`. It copies upstream's compiled `Checkout.js` into the module (comments stripped, its relative import pointed at the package), so apps never compile a third-party SFC. It also checks that the checkout still binds the element's inputs as attributes, which keeps a custom `prefix` working (`prefix` is a read-only DOM property, `Element.prototype.prefix`). CI fails if the generated file is stale.
 
 `OPENRECEIVE_TEST_WALLET=1` swaps in a fake receive-only wallet, so you can run the whole flow without a real NWC code. It is **playground only**. `POST /api/dev/settle/:hash` marks an invoice paid.
 
